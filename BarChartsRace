@@ -73,3 +73,59 @@ fig.add_annotation(
 
 # Show the plot
 fig.show()
+
+# Create a map for total_cases
+fig = px.choropleth(
+    df_clean,
+    locations="code",
+    color="total_cases",
+    scope="world",
+    hover_name="country",
+    animation_frame="date",
+    color_continuous_scale="Viridis"  # Updated color scheme
+)
+
+# Customization
+fig.update_layout(
+    title={
+        'text': "Total Cases Over Time by Country (COVID-19)",
+        'y': 0.95,
+        'x': 0.5,
+        'xanchor': 'center',
+        'yanchor': 'top'
+    },
+    coloraxis_colorbar=dict(
+        title="Total Cases",
+        titleside="top",
+        ticks="outside",
+    ),
+    font=dict(
+        family="Arial, sans-serif",
+        size=14
+    ),
+    geo=dict(
+        showframe=False,
+        landcolor="lightgray",
+        oceancolor="lightblue",
+        showocean=True
+    ),
+    width=1200,
+    height=900
+)
+
+# Enhance animation controls
+fig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 1000
+
+# Add annotation
+fig.add_annotation(
+    x=0.5,
+    y=-0.1,
+    text="Data Source: Our World in Data",
+    showarrow=False,
+    xref="paper",
+    yref="paper",
+    font=dict(size=12)
+)
+
+# Show the plot
+fig.show()
