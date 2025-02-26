@@ -1,0 +1,75 @@
+# import libraries
+import pandas as pd
+import plotly.express as px
+
+# import dataset COVID-19
+df = pd.read_csv('https://catalog.ourworldindata.org/garden/covid/latest/compact/compact.csv')
+
+
+# list of non countries
+non_countries = ['Africa', 'Asia', 'Asia excl. China', 'Europe', 'North America',
+    'Oceania', 'South America', 'High-income countries',
+    'Low-income countries', 'Lower-middle-income countries',
+    'Upper-middle-income countries', 'European Union (27)', 'World',
+    'World excl. China', 'World excl. China and South Korea',
+    'World excl. China, South Korea, Japan and Singapore', 'England & Wales',
+    'Summer Olympics 2020', 'Winter Olympics 2022']
+
+# clean dataframe
+df_clean = df[~df['country'].isin(non_countries)]
+
+# Create a map for total_deaths
+fig = px.choropleth(
+    df_clean,
+    locations="code",
+    color="total_deaths",
+    scope="world",
+    hover_name="country",
+    animation_frame="date",
+    color_continuous_scale="Viridis"  # Updated color scheme
+)
+
+# Customization
+fig.update_layout(
+    title={
+        'text': "Total Deaths Over Time by Country (COVID-19)",
+        'y': 0.95,
+        'x': 0.5,
+        'xanchor': 'center',
+        'yanchor': 'top'
+    },
+    coloraxis_colorbar=dict(
+        title="Total Deaths",
+        titleside="top",
+        ticks="outside",
+    ),
+    font=dict(
+        family="Arial, sans-serif",
+        size=14
+    ),
+    geo=dict(
+        showframe=False,
+        landcolor="lightgray",
+        oceancolor="lightblue",
+        showocean=True
+    ),
+    width=1200,
+    height=900
+)
+
+# Enhance animation controls
+fig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 1000
+
+# Add annotation
+fig.add_annotation(
+    x=0.5,
+    y=-0.1,
+    text="Data Source: Our World in Data",
+    showarrow=False,
+    xref="paper",
+    yref="paper",
+    font=dict(size=12)
+)
+
+# Show the plot
+fig.show()
